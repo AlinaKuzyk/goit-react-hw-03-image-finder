@@ -1,7 +1,7 @@
-const GalleryItem = webformatURL => {
+const GalleryItem = ({ webformatURL, tags }) => {
   return (
     <li class="gallery-item">
-      <img src={this.props.webformatURL} alt="" />
+      <img src={webformatURL} alt={tags} />
     </li>
   );
 };
