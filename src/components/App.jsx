@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import Gallery from './ImageGallery/ImageGallery';
+import css from './App.module.css';
 
 export class App extends Component {
   state = {
@@ -17,7 +18,7 @@ export class App extends Component {
 
   render() {
     return (
-      <div>
+      <div className={css.app}>
         {/* onSubmit это пропс, который мы потом передадим форме в Searchbar */}
         <Searchbar onSubmit={this.handleSearch} />
         {/* image прокидывает пропсом то, что мы ввели в инпут в форме */}
