@@ -5,11 +5,8 @@ import css from './App.module.css';
 
 export class App extends Component {
   state = {
-    //  showModal: false,
-    //  loading: false,
     searchText: '',
-    //  amount: 1,
-    //  currentImage: { img: '', alt: '' },
+    amount: null,
   };
   // передаем значения инпута из формы в Searchbar в State App
   handleSearch = searchText => {

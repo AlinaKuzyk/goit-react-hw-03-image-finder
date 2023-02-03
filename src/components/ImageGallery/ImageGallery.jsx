@@ -3,13 +3,12 @@ import fetchApi from '../../api';
 import GalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import Spinner from 'components/Loader/Loader';
 import Button from 'components/Button/Button';
+import css from './Gallery.module.css';
 
 export class Gallery extends Component {
   state = {
     pictures: [],
-    //  loading: false,
     amount: 1,
-    error: null,
     status: 'idle',
   };
 
@@ -35,7 +34,7 @@ export class Gallery extends Component {
             });
           }
         })
-        .catch(error => this.setState({ error, status: 'rejected' }));
+        .catch(error => this.setState({ status: 'rejected' }));
     }
   }
 
@@ -57,7 +56,7 @@ export class Gallery extends Component {
     if (status === 'resolved') {
       return (
         <>
-          <ul class="gallery">
+          <ul className={css.imageGallery}>
             {this.state.pictures.map(({ id, webformatURL, largeImageURL }) => {
               return (
                 <GalleryItem
@@ -72,25 +71,6 @@ export class Gallery extends Component {
         </>
       );
     }
-
-    //  return (
-    //    <>
-    //      <ul class="gallery">
-    //        {/* {this.state.loading && <Spinner />} */}
-    //        {/* {!this.props.image && <p>Try enter your request</p>} */}
-    //        {/* {this.state.pictures.map(({ id, webformatURL, largeImageURL }) => {
-    //          return (
-    //            <GalleryItem
-    //              key={id}
-    //              webformatURL={webformatURL}
-    //              largeImageURL={largeImageURL}
-    //            />
-    //          );
-    //        })} */}
-    //      </ul>
-    //      <Button onClick={this.handleLoadMore} />
-    //    </>
-    //  );
   }
 }
 
