@@ -4,6 +4,7 @@ import css from './Searchbar.module.css';
 export class Searchbar extends Component {
   state = {
     searchWord: '',
+    amount: 1,
   };
 
   //  функция где получаем то, что ввели в инпут

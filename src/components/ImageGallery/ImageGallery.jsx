@@ -25,9 +25,15 @@ export class Gallery extends Component {
           }
         })
         .then(data => {
+          console.log(data.hits.length);
+          console.log(data.total);
           if (data.hits.length === 0) {
             this.setState({ pictures: [], status: 'rejected' });
             return alert('There are no images with your request.');
+          }
+          if (data.hits.length >= data.totalHits) {
+            this.setState({ pictures: [], status: 'rejected' });
+            return alert('Ouupss...no more pictures');
           }
           this.setState({ pictures: data.hits, status: 'resolved' });
         });
