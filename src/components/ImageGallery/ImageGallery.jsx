@@ -16,7 +16,7 @@ export class Gallery extends Component {
     const prevImage = prevProps.image;
     const newImage = this.props.image;
 
-    if (prevImage !== newImage || prevState.amount !== this.state.amount) {
+    if (prevImage !== newImage) {
       this.setState({ status: 'pending' });
       fetchApi(newImage, this.state.amount)
         .then(response => {
@@ -26,15 +26,26 @@ export class Gallery extends Component {
         })
         .then(data => {
           if (data.hits.length === 0) {
-            this.setState({ pictures: data.hits, status: 'rejected' });
-          } else {
-            this.setState({
-              pictures: [...this.state.pictures, ...data.hits],
-              status: 'resolved',
-            });
+            this.setState({ pictures: [], status: 'rejected' });
+            return alert('There are no images with your request.');
+          }
+          this.setState({ pictures: data.hits, status: 'resolved' });
+        });
+    }
+
+    if (prevState.amount !== this.state.amount && prevImage === newImage) {
+      fetchApi(newImage, this.state.amount)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
           }
         })
-        .catch(error => this.setState({ status: 'rejected' }));
+        .then(data => {
+          this.setState({
+            pictures: [...this.state.pictures, ...data.hits],
+            status: 'resolved',
+          });
+        });
     }
   }
 
@@ -47,10 +58,6 @@ export class Gallery extends Component {
 
     if (status === 'pending') {
       return <Spinner />;
-    }
-
-    if (status === 'rejected') {
-      return alert('There are no images with your request.');
     }
 
     if (status === 'resolved') {
