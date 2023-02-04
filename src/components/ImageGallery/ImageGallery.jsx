@@ -29,9 +29,9 @@ export class Gallery extends Component {
           console.log(data.total);
           if (data.hits.length === 0) {
             this.setState({ pictures: [], status: 'rejected' });
-            return alert('There are no images with your request.');
+            return alert('There are no images for your request.');
           }
-          if (data.hits.length >= data.totalHits) {
+          if (data.hits.length > 0 && data.hits.length < 12) {
             this.setState({ pictures: [], status: 'rejected' });
             return alert('Ouupss...no more pictures');
           }
