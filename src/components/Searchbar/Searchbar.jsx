@@ -4,7 +4,6 @@ import css from './Searchbar.module.css';
 export class Searchbar extends Component {
   state = {
     searchWord: '',
-    amount: 1,
   };
 
   //  функция где получаем то, что ввели в инпут
@@ -16,11 +15,10 @@ export class Searchbar extends Component {
   handleFormSubmit = event => {
     event.preventDefault();
     if (this.state.searchWord.trim() === '') {
-      alert('Please, enter your request');
-      return;
+      return alert('Please, enter your request');
     }
     this.props.onSubmit(this.state.searchWord);
-    this.setState({ searchWord: '', amount: 1 });
+    this.setState({ searchWord: '' });
   };
 
   render() {

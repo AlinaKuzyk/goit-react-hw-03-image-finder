@@ -8,6 +8,7 @@ import css from './Gallery.module.css';
 export class Gallery extends Component {
   state = {
     pictures: [],
+    totalPictures: 0,
     amount: 1,
     status: 'idle',
   };
@@ -16,51 +17,49 @@ export class Gallery extends Component {
     const prevImage = prevProps.image;
     const newImage = this.props.image;
 
-    if (prevImage !== newImage) {
+    if (prevImage !== newImage || prevProps.page !== this.props.page) {
+      if (prevState.pictures.length && this.props.page === 1) {
+        this.setState({ pictures: [] });
+      }
       this.setState({ status: 'pending' });
-      fetchApi(newImage, this.state.amount)
+
+      fetchApi(newImage, this.props.page)
         .then(response => {
           if (response.ok) {
             return response.json();
           }
         })
-        .then(data => {
-          console.log(data.hits.length);
-          console.log(data.total);
-          if (data.hits.length === 0) {
+        .then(response => {
+          //  console.log(response.totalHits);
+          if (newImage !== prevImage) {
+            this.setState({
+              pictures: response.hits,
+              totalPictures: response.totalHits,
+              amount: 1,
+              status: 'resolved',
+            });
+          }
+
+          if (response.hits.length === 0) {
             this.setState({ pictures: [], status: 'rejected' });
             return alert('There are no images for your request.');
+          } else {
+            this.setState({
+              pictures: [...this.state.pictures, ...response.hits],
+              totalPictures: response.totalHits,
+              status: 'resolved',
+            });
           }
-          if (data.hits.length > 0 && data.hits.length < 12) {
-            this.setState({ pictures: [], status: 'rejected' });
-            return alert('Ouupss...no more pictures');
-          }
-          this.setState({ pictures: data.hits, status: 'resolved' });
-        });
-    }
-
-    if (prevState.amount !== this.state.amount && prevImage === newImage) {
-      fetchApi(newImage, this.state.amount)
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then(data => {
-          this.setState({
-            pictures: [...this.state.pictures, ...data.hits],
-            status: 'resolved',
-          });
         });
     }
   }
 
   handleLoadMore = () => {
-    this.setState(prevstate => ({ amount: prevstate.amount + 1 }));
+    this.props.onBtn();
   };
 
   render() {
-    const { status } = this.state;
+    const { status, pictures, totalPictures } = this.state;
 
     if (status === 'pending') {
       return <Spinner />;
@@ -70,7 +69,7 @@ export class Gallery extends Component {
       return (
         <>
           <ul className={css.imageGallery}>
-            {this.state.pictures.map(({ id, webformatURL, largeImageURL }) => {
+            {pictures.map(({ id, webformatURL, largeImageURL }) => {
               return (
                 <GalleryItem
                   key={id}
@@ -80,7 +79,9 @@ export class Gallery extends Component {
               );
             })}
           </ul>
-          <Button onClick={this.handleLoadMore} />
+          {pictures.length < totalPictures && (
+            <Button onClick={this.handleLoadMore} />
+          )}
         </>
       );
     }
